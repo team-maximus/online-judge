@@ -1,0 +1,91 @@
+#include <string>
+#include <vector>
+#include <algorithm>
+
+using namespace std;
+
+string solution(int n, int t, int m, vector<string> timetable) {
+    string answer = ""; 
+    int time_conn = 0 ; 
+    int now_on = 0;
+    int now_time = 0;
+    int bus_left = 0 ;
+    vector<int> timetable_int ;
+    
+    //문자열을 연산 가능하게 처리
+   for(int i = 0 ; i< timetable.size() ; i++)
+    {
+        timetable[i].erase(2,1);
+        timetable_int.push_back(atoi(timetable[i].c_str()));
+    }        
+    //timetable time 순으로 sort
+    sort(timetable_int.begin(),timetable_int.end());
+    
+    for(int i =0 ; i < n ; i++)
+    {
+        if(timetable_int.size()<1)
+        {
+            break;
+        }        
+        now_time = 0;
+        if(t < 6){
+            now_time = 900 + t*i;
+        }
+        else {
+            now_time = 900 + t/6 + t%6*i;
+        }
+        
+        now_on = 0;    
+        
+        for(int j =0 ; j< timetable_int.size() ; i++)
+        {
+            if(now_on >=m)
+            {
+                break;
+            }
+            if(timetable_int[j] <= now_time)
+            {
+                //삭제 하고 이것을 콘의 시간으로 설정,
+                time_conn = timetable_int[j];
+                timetable_int.erase(timetable_int.begin() + j); 
+                now_on++;
+            }
+        }
+        bus_left = n-i-1;
+    }
+    
+    //콘 시간 조정
+    //case1 탑승 가능한경우 더 늦게 탈 수있는지 확인후 가장 늦게 탑승한다
+    if(now_on<m)
+    {
+        //뒤에 차가 더있을경우
+        if(bus_left>0)
+        {
+            time_conn = 900 + (((n*t)/60)-1)*100;                        
+        }
+        //이거 못타면 안되는 경우
+        else
+        {
+            time_conn = now_time;
+        }
+    }
+
+    //case2 탑승 불가능한 경우 맨 뒤에있는 사람보다 1분 일찍 탑승한다
+    else{
+        time_conn --;
+        if(time_conn%100>59)
+        {
+            time_conn-=40;
+        }
+    }
+    
+    //연산한 것을 결과 포맷으로 변환
+    answer += (time_conn/1000 ==0) ? "0" : to_string(time_conn/1000) ;
+    answer += (time_conn%1000/100 ==0) ? "0" : to_string(time_conn%1000/100) ;
+    answer += ":";
+    answer += (time_conn%100/10 ==0) ? "0" : to_string(time_conn%100/10) ;
+    answer += (time_conn%10 ==0) ? "0" : to_string(time_conn%10) ;
+
+    return answer;
+    //return to_string(time_conn);
+}
