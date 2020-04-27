@@ -1,0 +1,95 @@
+#include <string>
+#include <vector>
+#include <math.h>
+using namespace std;
+int tenConvertTwo(int num)
+{
+    int result = 0 ;
+    for(int i =0 ; num >0 ; i++)
+    {
+        int binary = num%2;
+        result += binary*pow(10,i);
+        num /=2;
+    }
+    return result;
+}
+vector<string> solution(int n, vector<int> arr1, vector<int> arr2) {
+    vector<string> answer;
+    vector<string> v1;
+    vector<string> v2;
+    vector<string> v_;        
+    
+    for(int i =0; i< n ; i++)
+    {
+        //2진수 변환
+        int binary_num = tenConvertTwo(arr1[i]);
+        string binary_num_str= to_string(binary_num);
+        //공백 or # 변환
+        for(int j =0 ; j< binary_num_str.length() ; j++)
+        {
+            if(binary_num_str[j] == '0')
+            {
+                binary_num_str[j] = ' ';
+            }
+            else
+            {
+                binary_num_str[j] = '#';
+            }
+        }        
+        //자릿수 맞추기
+        string str_O = "";
+        for(int k = 0 ; k < n - binary_num_str.length() ; k ++)
+        {
+            str_O += ' ';
+        }        
+        string str_num = "" + str_O + binary_num_str;     
+        v1.push_back(str_num);
+    }
+    
+    for(int i =0; i< n ; i++)
+    {
+        //2진수 변환
+        int binary_num = tenConvertTwo(arr2[i]);
+        string binary_num_str = to_string(binary_num);
+        //공백 or # 변환
+        for(int j =0 ; j< binary_num_str.length() ; j++)
+        {
+            if(binary_num_str[j] == '0')
+            {
+                binary_num_str[j] = ' ';
+            }
+            else
+            {
+                binary_num_str[j] = '#';
+            }
+        }        
+        //자릿수 맞추기
+        string str_O = "";
+        for(int k = 0 ; k < n - binary_num_str.length() ; k ++)
+        {
+            str_O += ' ';
+        }        
+        string str_num = "" + str_O + binary_num_str;  
+        v2.push_back(str_num);
+    }
+    
+    //두 지도를 비교함
+    for(int i = 0 ; i < n ; i++)
+    {
+        string str = "";
+        for(int j = 0 ; j < n; j++)
+        {
+            if(v1[i][j]=='#' || v2[i][j]=='#')
+            {
+                str += "#";
+            } 
+            else
+            {
+                str += " ";
+            }
+        }
+        v_.push_back(str);
+    }
+    return v_;
+}
+
