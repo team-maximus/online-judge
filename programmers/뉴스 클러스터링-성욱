@@ -1,0 +1,63 @@
+#include <string>
+#include <algorithm>
+#include <vector>
+#include <set>
+
+using namespace std;
+
+int solution(string str1, string str2) {
+    int answer = 0;
+    vector<string> v1;
+    vector<string> v2;
+    vector<string> v_union;
+    vector<string> v_intersection;    
+    
+    //문자열 처리 -> 모두 소문자로
+    transform(str1.begin(),str1.end(),str1.begin(),::tolower);   
+    transform(str2.begin(),str2.end(),str2.begin(),::tolower);
+
+    //v1처리 str1을 2글자씩 찢어서 넣는다, 이때 2글자씩 찢은것에 문자 이외의 것이 있으면 넣지 않는다
+    for(int i = 0 ; i< str1.length()-1 ; i++)
+    {
+        if(str1[i]>='a'&& str1[i] <='z' && str1[i+1]>='a'&& str1[i+1] <='z')
+        {
+                string str = "" +str1[i] + str1[i+1];
+                v1.push_back(str);
+        }  
+    }
+    
+    //v2에 대해서도 똑같이 처리 해준다
+    for(int i = 0 ; i< str2.length()-1 ; i++)
+    {
+        if(str2[i]>='a'&& str2[i] <='z' && str2[i+1]>='a'&& str2[i+1] <='z')
+        {
+                string str = "" +str2[i] + str2[i+1];
+                v2.push_back(str);
+        }        
+    }        
+    //v1 ,v2 중복 제거
+    unique(v1.begin(),v1.end());
+    unique(v2.begin(),v2.end());    
+    
+    
+    //교집합 구하기
+    set_intersection(v1.begin(),v1.end(),v2.begin(),v2.end(),back_inserter(v_intersection));   
+    double intersection_size = v_intersection.size();
+    
+    //합집합 구하기
+    set_union(v1.begin(),v1.end(),v2.begin(),v2.end(),back_inserter(v_union));
+    double union_size = v_union.size();
+    
+    //자카드 유사도 구해서 65536곱하기
+    if(intersection_size == 0 || union_size == 0)
+    {
+        answer = 65536;
+    }
+    else
+    {
+        answer = intersection_size / union_size * 65536;        
+    }
+    return answer;    
+}
+
+
