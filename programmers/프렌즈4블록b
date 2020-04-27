@@ -1,0 +1,51 @@
+/* 
+    1. 'E'일 경우에는 터뜨리면 안 된다.
+*/
+
+#include <string>
+#include <vector>
+#include <queue>
+#include <algorithm>
+#include <unordered_set>
+
+using namespace std;
+
+int solution(int m, int n, vector<string> board) {
+    queue<pair<int, int>> q;
+    unordered_set<int> visited;
+    int answer = 0;
+    while(1) {
+        for(int r = 0; r < m - 1; ++r){
+            for(int c = 0; c < n - 1; ++c){
+                if(board[r][c] == 'E') continue;    /* 1 */
+                string row(2, board[r][c]);
+                if(board[r].substr(c, 2) == row && board[r + 1].substr(c, 2) == row){
+                    q.push(make_pair(r, c));
+                    q.push(make_pair(r, c + 1));
+                    q.push(make_pair(r + 1, c));
+                    q.push(make_pair(r + 1, c + 1));
+                }
+            }
+        }
+        if(q.empty()) break;
+        while(q.size()){
+            int r = q.front().first, c = q.front().second;
+            q.pop();
+            if(visited.emplace(r * 30 + c).second){
+                ++answer;
+                board[r][c] = 'E';
+            }
+        }
+        visited.clear();
+        for(int c = 0; c < n; ++c){
+            for(int r = 0; r < m - 1; ++r){
+                if(board[r + 1][c] != 'E') continue;
+                int gap;
+                for(gap = 2; r + gap < m && board[r + gap][c] == 'E'; ++gap);
+                --gap;
+                swap(board[r][c], board[r + gap][c]);
+            }
+        }
+    }
+    return answer;
+}
