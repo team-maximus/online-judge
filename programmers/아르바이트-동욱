@@ -20,6 +20,7 @@ void select(vector<vector<int>> &last_days, vector<vector<int>> &salaries, int f
 	select(last_days, salaries, first_day + 1, max_first_day, salary_sum);
 }
 
+// TODO : 이거 없애기
 bool cmp(const vector<int> &a, const vector<int> &b) {
 	return a[0] < b[0];		// compare the value of the first item (first_day)
 }
