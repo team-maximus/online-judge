@@ -1,0 +1,59 @@
+/*
+	1. skill_idx는 1부터 시작 <> answer의 idx는 0부터 시작
+	2. tree traversal중 child가 없을 때는 point 반환하면 안 됨
+*/
+
+#include <iostream>
+#include <vector>
+#include <algorithm>
+
+using namespace std;
+
+int postorder_traversal(vector<vector<int>> &children, int skill_idx, vector<int> &answer, int &sum_point) {
+	int point = children[skill_idx].empty();	/* 2 */
+	for (auto child : children[skill_idx]) {
+		point += postorder_traversal(children, child, answer, sum_point);
+	}
+	answer[skill_idx - 1] = point;	/* 1 */
+	sum_point += point;
+	return point;
+}
+
+int find_root(vector<int> &parent, int skill_idx) {
+	if (!parent[skill_idx]) return skill_idx;
+	return find_root(parent, parent[skill_idx]);
+}
+
+bool cmp(const vector<int> &a, const vector<int> &b) {
+	return max(a[0], a[1]) < max(b[0], b[1]);
+}
+
+vector<int> solution(int total_sp, vector<vector<int>> &skills) {
+	vector<int> &max_skill = *max_element(skills.begin(), skills.end(), cmp);
+	int max_skill_idx = max(max_skill[0], max_skill[1]);
+	vector<int> parent(max_skill_idx + 1);
+	vector<vector<int>> children(max_skill_idx + 1);
+	for (auto skill : skills) {
+		parent[skill[1]] = skill[0];
+		children[skill[0]].push_back(skill[1]);
+	}
+	int root = find_root(parent, 6);
+	vector<int> answer(max_skill_idx);
+	int sum_point = 0;
+	postorder_traversal(children, root, answer, sum_point);
+	int coef = total_sp / sum_point;
+	for (auto& point : answer) {
+		point *= coef;
+	}
+	return answer;
+}
+
+int main() {
+	int total_sp = 121;
+	vector<vector<int>> skills = { { 1, 2 }, { 1, 3 }, { 3, 6 }, { 3, 4 }, { 3, 5 } };
+	vector<int> answer = solution(total_sp, skills);
+	for (auto point : answer) {
+		cout << point << endl;
+	}
+	return 0;
+}
